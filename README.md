@@ -4,11 +4,15 @@ Application web affichant en direct la qualité de l'air (AQI) de 5 villes, conn
 
 ## Fonctionnalités
 
-- Carte du monde avec une "tache" colorée par ville, indiquant le niveau d'AQI moyen du jour sélectionné
+- Carte du monde (continents en SVG) avec une tache colorée par ville, étiquetée par niveau d'AQI : **Bon**, **Correct**, **Modéré**, **Mauvais**, **Très mauvais**
 - Sélecteur de date (par défaut : aujourd'hui)
 - Sélecteur de ville (ou "Toutes les villes")
-- Tableau détaillé des mesures heure par heure : AQI + tous les polluants (PM2.5, PM10, O₃, NO₂, SO₂, CO)
+- Panneau de graphiques :
+  - Évolution de l'AQI au fil des heures, courbe par ville sur fond coloré par niveau
+  - Polluants moyens par ville (PM2.5, PM10, NO₂, O₃, SO₂, CO) en µg/m³
+- Tableau détaillé des mesures heure par heure : AQI + tous les polluants
 - Connexion directe et en lecture seule à Supabase via l'API publique (`anon key`)
+- Déployé sur Vercel
 
 ## Installation
 
@@ -57,6 +61,14 @@ npm run build
 
 Génère un dossier `dist/` déployable sur n'importe quel hébergeur statique (Vercel, Netlify, GitHub Pages, etc.).
 
+### 6. Déploiement sur Vercel
+
+Le projet est déployé sur Vercel. Voir [deployment.md](./deployment.md) pour le lien et les détails.
+
+```bash
+vercel --prod
+```
+
 ## Structure du projet
 
 ```
@@ -65,15 +77,20 @@ aqi-dashboard/
 ├── package.json
 ├── vite.config.js
 ├── .env.example
+├── deployment.md          # informations de déploiement Vercel
 └── src/
     ├── main.jsx              # point d'entrée React
     ├── App.jsx                # composant principal, logique de données
     ├── App.css                # styles
     ├── index.css              # reset global
     ├── supabaseClient.js      # connexion Supabase
-    ├── aqiScale.js             # échelle de couleurs AQI + projection carte
+    ├── aqiScale.js            # échelle AQI (couleurs, libellés) + projection carte
     └── components/
-        ├── WorldMap.jsx        # carte avec taches colorées
+        ├── WorldMap.jsx        # carte du monde avec taches colorées et niveaux
+        ├── worldMapPath.js     # tracés SVG des continents (projection équirectangulaire)
+        ├── ChartsPanel.jsx     # panneau de graphiques
+        ├── AqiTrendChart.jsx   # courbes d'évolution de l'AQI par heure
+        ├── PollutantBars.jsx   # polluants moyens par ville
         ├── CitySelector.jsx    # sélecteur de ville
         ├── DateSelector.jsx    # sélecteur de date
         └── DataTable.jsx       # tableau des mesures
@@ -89,5 +106,6 @@ Ce projet lit directement les tables `dim_ville`, `dim_temps`, `fact_aqi` du sch
 ## Notes techniques
 
 - Aucune donnée sensible n'est exposée : seule la clé `anon` (publique, en lecture) est utilisée côté client.
-- La carte utilise une projection équirectangulaire simple (pas de librairie cartographique lourde) pour rester légère.
+- La carte utilise une projection équirectangulaire simple : les continents sont rendus en SVG et les villes positionnées sur la même projection (pas de librairie cartographique lourde).
+- Les graphiques sont dessinés en SVG natif, sans librairie de chart (le bundle reste léger).
 - Le site est responsive (mobile inclus) et respecte `prefers-reduced-motion`.
