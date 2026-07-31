@@ -4,6 +4,7 @@ import WorldMap from "./components/WorldMap";
 import CitySelector from "./components/CitySelector";
 import DateSelector from "./components/DateSelector";
 import DataTable from "./components/DataTable";
+import ChartsPanel from "./components/ChartsPanel";
 import { aqiLabel, aqiColor } from "./aqiScale";
 import "./App.css";
 
@@ -136,6 +137,11 @@ export default function App() {
           selectedCity={selectedCity}
           onSelectCity={setSelectedCity}
         />
+      </section>
+
+      <section className="panel">
+        <h2 className="panel__title">Graphiques de la qualité de l'air</h2>
+        <ChartsPanel rows={rows} />
       </section>
 
       <section className="panel">
