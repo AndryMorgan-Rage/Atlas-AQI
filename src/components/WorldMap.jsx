@@ -1,4 +1,5 @@
 import { aqiColor, aqiLabel, projectToPercent } from "../aqiScale";
+import { WORLD_PATH } from "./worldMapPath";
 
 // citiesData: [{ nom, pays, latitude, longitude, aqiMoyen }]
 export default function WorldMap({ citiesData, selectedCity, onSelectCity }) {
@@ -7,36 +8,18 @@ export default function WorldMap({ citiesData, selectedCity, onSelectCity }) {
       <div className="world-map__frame">
         <svg
           viewBox="0 0 100 55"
-          className="world-map__grid"
+          className="world-map__svg"
           preserveAspectRatio="none"
           aria-hidden="true"
         >
-          {Array.from({ length: 9 }).map((_, i) => (
-            <line
-              key={`v${i}`}
-              x1={(i + 1) * 10}
-              y1="0"
-              x2={(i + 1) * 10}
-              y2="55"
-              className="world-map__gridline"
-            />
-          ))}
-          {Array.from({ length: 4 }).map((_, i) => (
-            <line
-              key={`h${i}`}
-              x1="0"
-              y1={(i + 1) * 11}
-              x2="100"
-              y2={(i + 1) * 11}
-              className="world-map__gridline"
-            />
-          ))}
-          <line x1="0" y1="27.5" x2="100" y2="27.5" className="world-map__equator" />
+          <path d={WORLD_PATH} className="world-map__land" />
         </svg>
 
         {citiesData.map((city) => {
           const { x, y } = projectToPercent(city.latitude, city.longitude);
           const color = aqiColor(city.aqiMoyen);
+          const hasData = city.aqiMoyen != null;
+          const level = hasData ? aqiLabel(city.aqiMoyen) : "Pas de donnée";
           const isSelected = selectedCity === city.nom;
           return (
             <button
@@ -44,17 +27,20 @@ export default function WorldMap({ citiesData, selectedCity, onSelectCity }) {
               className={`world-map__spot ${isSelected ? "world-map__spot--active" : ""}`}
               style={{
                 left: `${x}%`,
-                top: `${(y / 55) * 100}%`,
+                top: `${y}%`,
                 "--spot-color": color,
               }}
               onClick={() => onSelectCity(isSelected ? null : city.nom)}
-              title={`${city.nom} — AQI ${city.aqiMoyen?.toFixed(1) ?? "?"} (${aqiLabel(
-                city.aqiMoyen
-              )})`}
+              title={`${city.nom} — AQI ${city.aqiMoyen?.toFixed(1) ?? "?"} (${level})`}
             >
               <span className="world-map__pulse" />
               <span className="world-map__dot" />
-              <span className="world-map__tag">{city.nom}</span>
+              <span className="world-map__tag">
+                <span className="world-map__city">{city.nom}</span>
+                <span className="world-map__level" style={{ color }}>
+                  {level}
+                </span>
+              </span>
             </button>
           );
         })}

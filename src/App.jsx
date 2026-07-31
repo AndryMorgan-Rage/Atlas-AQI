@@ -148,7 +148,7 @@ export default function App() {
 
       <footer className="app__footer">
         Données collectées via OpenWeatherMap Air Pollution API · Pipeline
-        automatisé, entrepôt PostgreSQL (Supabase)
+        automatisé, entrepôt PostgreSQL (Supabase) , Andry Morgan
       </footer>
     </div>
   );

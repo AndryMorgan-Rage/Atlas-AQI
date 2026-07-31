@@ -2,9 +2,9 @@
 export const AQI_SCALE = {
   1: { label: "Bon", color: "#4ADE80" },
   2: { label: "Correct", color: "#A3E635" },
-  3: { label: "Modere", color: "#FACC15" },
+  3: { label: "Modéré", color: "#FACC15" },
   4: { label: "Mauvais", color: "#FB7185" },
-  5: { label: "Tres mauvais", color: "#C084FC" },
+  5: { label: "Très mauvais", color: "#C084FC" },
 };
 
 export function aqiColor(aqi) {
